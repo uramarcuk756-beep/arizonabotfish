@@ -30,7 +30,6 @@ jobs:
 
       - name: Build APK
         run: |
-          cd bot
           buildozer android debug 2>&1 | tail -50
 
       - name: Upload APK
