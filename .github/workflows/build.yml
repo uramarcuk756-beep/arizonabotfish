@@ -1,0 +1,40 @@
+name: Build ArizonaFish APK
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pip zip unzip openjdk-17-jdk \
+            libffi-dev libssl-dev libjpeg-dev zlib1g-dev \
+            git wget curl autoconf libtool
+
+      - name: Install buildozer
+        run: |
+          pip install buildozer cython
+
+      - name: Build APK
+        run: |
+          cd bot
+          buildozer android debug 2>&1 | tail -50
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: ArizonaFish-APK
+          path: bot/bin/*.apk
